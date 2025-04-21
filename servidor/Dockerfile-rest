@@ -1,0 +1,6 @@
+FROM python:3.13
+WORKDIR /app
+COPY rest_api.py .
+COPY database.json .
+RUN pip install fastapi uvicorn
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8001"]

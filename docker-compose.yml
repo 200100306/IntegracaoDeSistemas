@@ -1,0 +1,6 @@
+  services:
+  soap-server:
+    image: trabalhois:soap-server
+    ports: 8002:8002
+    name: soap_server
+  build: .  

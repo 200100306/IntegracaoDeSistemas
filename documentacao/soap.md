@@ -27,17 +27,17 @@ docker run -p 8002:8002 --name soap_server trabalhois:soap-server
 cd servidor 
 python soap_api.py
 ```
+
 ## Run (Cliente)
 ```shell
 cd cliente
 python soap_client.py
 ```
 
-## Insall(Clinente)
+## Insall(Cliente)
 ```shell
 python3 -m venv ".venv"
-source .venv/bin/activate
+source pythonTest/bin/activate
 pip install -r servidor/requirements.txt
 ```
-
 

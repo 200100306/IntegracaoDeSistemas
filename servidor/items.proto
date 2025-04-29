@@ -2,33 +2,35 @@ syntax = "proto3";
 
 package items;
 
-message Item {
-  string id = 1;
-  string name = 2;
-  string description = 3;
-}
+import "google/protobuf/empty.proto";
 
-message ItemRequest {
-  string id = 1;
-}
-
+// Mensagem para representar um item
 message ItemResponse {
-  string id = 1;
-  string name = 2;
-  string description = 3;
+  string id = 1;           // ID do item
+  string name = 2;         // Nome do item
+  string description = 3;  // Descrição do item
 }
 
+// Mensagem para uma lista de itens
 message ItemList {
-  repeated ItemResponse items = 1;
+  repeated ItemResponse items = 1; // Lista de itens
 }
 
-message NewItem {
-  string name = 1;
-  string description = 2;
+// Requisição para criar um novo item
+message NewItemRequest {
+  string name = 1;         // Nome do novo item
+  string description = 2;  // Descrição do novo item
 }
 
+// Requisição para deletar um item
+message ItemRequest {
+  string id = 1;           // ID do item
+}
+
+// Serviço para as operações gRPC
 service ItemService {
-  rpc GetItems (google.protobuf.Empty) returns (ItemList);
-  rpc CreateItem (NewItem) returns (ItemResponse);
-  rpc DeleteItem (ItemRequest) returns (ItemResponse);
+  rpc GetItems(google.protobuf.Empty) returns (ItemList); // Retorna todos os itens
+  rpc CreateItem(NewItemRequest) returns (ItemResponse);  // Cria um novo item
+  rpc DeleteItem(ItemRequest) returns (ItemResponse);     // Deleta um item pelo ID
 }
+

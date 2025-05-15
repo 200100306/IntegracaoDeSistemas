@@ -6,27 +6,29 @@ services:
     ports:
       - "8001:8001"
     container_name: rest_server
-    build: .
-    context: ./rest/Dockerfile-rest
+    build:
+      context: ./rest
+
   soap-server:
     image: trabalhodois:soap-server
     ports:
       - "8002:8002"
     container_name: soap_server
-    build: .
-    context: ./soap/Dockerfile-soap
+    build:
+      context: ./soap
+
   grpc-server:
     image: trabalhodois:grpc-server
     ports:
       - "8003:8003"
     container_name: grpc_server
-    build: .
-    context: ./grpc/Dockerfile-grpc
+    build:
+      context: ./grpc
 
   graphql-server:
     image: trabalhodois:graphql-server
     ports:
       - "8004:8004"
     container_name: graphql_server
-    build: .
-    context: ./graphql/Dockerfile-graphql
+    build:
+      context: ./graphql

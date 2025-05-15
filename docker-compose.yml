@@ -1,6 +1,30 @@
-  services:
+version: '3'
+
+services:
+  rest-server:
+    image: trabalhodois:rest-server
+    ports:
+      - "8001:8001"
+    container_name: rest_server
+    build: .
+
   soap-server:
-    image: trabalhois:soap-server
-    ports: 8002:8002
-    name: soap_server
-  build: .  
+    image: trabalhodois:soap-server
+    ports:
+      - "8002:8002"
+    container_name: soap_server
+    build: .
+
+  grpc-server:
+    image: trabalhodois:grpc-server
+    ports:
+      - "8003:8003"
+    container_name: grpc_server
+    build: .
+
+  graphql-server:
+    image: trabalhodois:graphql-server
+    ports:
+      - "8004:8004"
+    container_name: graphql_server
+    build: .

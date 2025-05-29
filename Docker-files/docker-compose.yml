@@ -32,3 +32,11 @@ services:
     container_name: graphql_server
     build:
       context: ./graphql
+    
+      websocket_server:
+    image: trabalhodois:websocket_server
+    ports:
+      - "8010:8010"
+    container_name: websocket_server
+    build:
+      context: ./websocket_server

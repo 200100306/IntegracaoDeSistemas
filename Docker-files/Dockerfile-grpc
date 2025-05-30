@@ -1,0 +1,7 @@
+FROM python:3.10
+WORKDIR /app
+COPY bibliotecasgrpc.txt .
+COPY items.proto .
+RUN pip install -r bibliotecasgrpc.txt
+RUN python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. items.proto
+CMD ["python", "grpc_api.py"]

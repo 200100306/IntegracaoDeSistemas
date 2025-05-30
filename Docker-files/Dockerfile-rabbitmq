@@ -1,0 +1,12 @@
+# Usa a imagem oficial do RabbitMQ no painel de administração
+FROM rabbitmq:3-management
+
+# User e Password do Rabbit
+ENV RABBITMQ_DEFAULT_USER=guest
+ENV RABBITMQ_DEFAULT_PASS=guest
+
+# Porta do Container(5672) Porta de anfintrião (host(15672))
+EXPOSE 5672 15672
+
+# Comando para iniciar o RabbitMQ
+CMD ["rabbitmq-server"]

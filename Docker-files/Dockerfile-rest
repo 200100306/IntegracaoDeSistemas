@@ -3,4 +3,10 @@ WORKDIR /app
 COPY rest_api.py .
 COPY database.json .
 RUN pip3 install requests flask fastapi uvicorn
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8001"]
+CMD ["python", "rest_api.py"]
+
+
+
+
+
+

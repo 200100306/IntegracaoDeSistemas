@@ -1,0 +1,7 @@
+version: '3'
+services:
+  grpc-server:
+    image: trabalhodois:grpc-server
+    ports:
+      - "8003:8003"
+    container_name: grpc_server

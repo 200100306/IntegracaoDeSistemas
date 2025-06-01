@@ -1,0 +1,5 @@
+  rest-server:
+    image: trabalhodois:rest-server
+    ports:
+      - "8001:8001"
+    container_name: rest_server

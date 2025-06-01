@@ -1,0 +1,5 @@
+  graphql-server:
+    image: trabalhodois:graphql-server
+    ports:
+      - "8004:8004"
+

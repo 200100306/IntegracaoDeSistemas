@@ -1,9 +1,0 @@
-requests
-flask
-fastapi
-uvicorn
-spyne
-strawberry-graphql
-grpcio
-grpcio-tools
-zeep

@@ -44,14 +44,8 @@ class ItemService(items_pb2_grpc.ItemServiceServicer):
         context.set_code(grpc.StatusCode.NOT_FOUND)
         context.set_details("Item não encontrado")
         return items_pb2.ItemResponse()
-
-def serve():
-    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    items_pb2_grpc.add_ItemServiceServicer_to_server(ItemService(), server)
-    server.add_insecure_port("[::]:50051")
-    server.start()
-    print("Servidor gRPC rodando na porta 50051...")
-    server.wait_for_termination()
-
-if __name__ == "__main__":
-    serve()
+try:
+    while True:
+        time.sleep(86400)
+except KeyboardInterrupt:
+    print("Servidor encerrado.")

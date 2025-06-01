@@ -3,5 +3,5 @@ WORKDIR /app
 COPY soap_api.py .
 COPY database.json .
 COPY bibliotecassoap.txt .
-RUN pip install -r bibliotecassoap.txt
+RUN pip3 install -r bibliotecassoap.txt
 CMD ["python", "soap_api.py"]

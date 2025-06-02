@@ -5,7 +5,7 @@ from google.protobuf.empty_pb2 import Empty
 
 def run():
     # Conectar ao servidor gRPC
-    channel = grpc.insecure_channel("localhost:50051")  # Substitua pelo IP correto, se necessário
+    channel = grpc.insecure_channel("192.168.246.55:8003")  # Substitua pelo IP correto, se necessário
     stub = items_pb2_grpc.ItemServiceStub(channel)
 
     # Testar o método GetItems

@@ -9,7 +9,7 @@ session = Session()
 transport = Transport(session=session)
 
 # --- Connect to WSDL ---
-client = Client("http://localhost:8002/?wsdl", transport=transport)
+client = Client("http://192.168.246.55:8002/?wsdl", transport=transport)
 
 # --- Test Calls ---
 # Create items

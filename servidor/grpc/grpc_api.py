@@ -1,18 +1,21 @@
 import grpc
 from concurrent import futures
 import json
+import os
 import items_pb2
 import items_pb2_grpc
 from google.protobuf.empty_pb2 import Empty
-import time
 
-DATABASE = "database.json"
+# Caminho seguro para o arquivo JSON
+BASE_DIR = os.path.dirname(__file__)
+DATABASE = os.path.join(BASE_DIR, "database.json")
 
 def load_data():
     try:
         with open(DATABASE, "r") as file:
-            return json.load(file)
-    except FileNotFoundError:
+            content = file.read().strip()
+            return json.loads(content) if content else {}
+    except (FileNotFoundError, json.JSONDecodeError):
         return {}
 
 def save_data(data):
@@ -45,8 +48,14 @@ class ItemService(items_pb2_grpc.ItemServiceServicer):
         context.set_code(grpc.StatusCode.NOT_FOUND)
         context.set_details("Item não encontrado")
         return items_pb2.ItemResponse()
-try:
-    while True:
-        time.sleep(86400)
-except KeyboardInterrupt:
-    print("Servidor encerrado.")
+
+def serve():
+    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+    items_pb2_grpc.add_ItemServiceServicer_to_server(ItemService(), server)
+    server.add_insecure_port("[::]:8003")  # Porta corrigida para 8003
+    server.start()
+    print("Servidor gRPC iniciado em 127.0.0.1:8003")
+    server.wait_for_termination()
+
+if __name__ == "__main__":
+    serve()

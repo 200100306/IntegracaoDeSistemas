@@ -6,17 +6,6 @@
     <title>Tarefas</title>
 </head>
 <body>
-    <h1>Tarefas - {{ servico if servico else 'Escolha um Serviço' }}</h1>
-
-    {% if tarefas %}
-        <ul>
-            {% for t in tarefas %}
-                <li><b>{{ t.id }}</b>: {{ t.name }} - {{ t.description }}</li>
-            {% endfor %}
-        </ul>
-    {% elif servico %}
-        <p>Sem tarefas disponíveis.</p>
-    {% endif %}
 
     <h1>Gestão de Tarefas</h1>
     <nav>
@@ -29,12 +18,32 @@
         <a href="/rabbit/list_items">Rabbit</a>
     </nav>
 
+    <h1>{{ servico if servico else 'Escolha um Serviço' }}</h1>
+
+    {% if tarefas %}
+        <ul>
+            {% for t in tarefas %}
+                <li><b>{{ t.id }}</b>: {{ t.name }} - {{ t.description }}</li>
+            {% endfor %}
+        </ul>
+    {% elif servico %}
+        <p>Sem tarefas disponíveis.</p>
+    {% endif %}
+    
     {% if servico %}
     <h2>Criar Nova Tarefa (via {{ servico.upper() }})</h2>
     <form method="post" action="/{{ servico }}/criar">
         <input name="name" placeholder="Nome" required><br>
         <input name="description" placeholder="Descrição" required><br>
         <button type="submit">Criar</button>
+    </form>
+    {% endif %}
+
+    {% if servico %}
+    <h2>Apagar Tarefa (via {{ servico.upper() }})</h2>
+        <form method="post" action="/{{ servico }}/apagar">
+        <input name="id" placeholder="ID da tarefa" required><br>
+        <button type="submit">Apagar</button>
     </form>
     {% endif %}
 </body>

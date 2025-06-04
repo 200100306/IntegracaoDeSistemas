@@ -1,13 +1,14 @@
 import requests
 
-GRAPHQL_URL = "http://localhost:8004/graphql"
+GRAPHQL_URL = "http://127.0.0.1:8004/graphql"
 
 def graphql_query(query, variables=None):
-    response = requests.post(GRAPHQL_URL, json={'query': query, 'variables': variables})
-    if response.status_code == 200:
+    try:
+        response = requests.post(GRAPHQL_URL, json={'query': query, 'variables': variables})
+        response.raise_for_status()
         return response.json()
-    else:
-        print("Erro na requisição GraphQL:", response.text)
+    except requests.exceptions.RequestException as e:
+        print("Erro na requisição GraphQL:", e)
         return None
 
 def list_items():
@@ -21,11 +22,19 @@ def list_items():
     }
     """
     result = graphql_query(query)
-    if result:
-        items = result.get("data", {}).get("getItems", [])
-        print("Itens disponíveis:")
-        for item in items:
-            print(f"- ID: {item['id']}, Nome: {item['name']}, Descrição: {item['description']}")
+    print("DEBUG LIST RESULT:", result)
+    if result and "data" in result:
+        items = result["data"].get("getItems", [])
+        if items:
+            print("\nItens disponíveis:")
+            for item in items:
+                print(f"- ID: {item['id']}, Nome: {item['name']}, Descrição: {item['description']}")
+        else:
+            print("\nNenhum item encontrado.")
+    else:
+        print("\nErro ao recuperar itens.")
+        if result and "errors" in result:
+            print("Detalhes:", result["errors"])
 
 def create_item(name, description):
     mutation = """
@@ -39,9 +48,13 @@ def create_item(name, description):
     """
     variables = {"name": name, "description": description}
     result = graphql_query(mutation, variables)
-    if result:
-        item = result.get("data", {}).get("createItem")
-        print(f"Item criado: ID {item['id']}, Nome: {item['name']}")
+    if result and "data" in result:
+        item = result["data"]["createItem"]
+        print(f"\nItem criado: ID {item['id']}, Nome: {item['name']}")
+    else:
+        print("\nErro ao criar item.")
+        if result and "errors" in result:
+            print("Detalhes:", result["errors"])
 
 def delete_item(item_id):
     mutation = """
@@ -51,12 +64,17 @@ def delete_item(item_id):
     """
     variables = {"id": item_id}
     result = graphql_query(mutation, variables)
-    if result:
-        print(result.get("data", {}).get("deleteItem"))
+    if result and "data" in result:
+        print(f"\n{result['data']['deleteItem']}")
+    else:
+        print("\nErro ao apagar item.")
+        if result and "errors" in result:
+            print("Detalhes:", result["errors"])
 
 if __name__ == "__main__":
-    print("GraphQL Client")
+    print("CLIENTE GRAPHQL")
+
     create_item("Lápis", "Um lápis preto")
     list_items()
-    delete_item("1")
+    delete_item("1")  # Certifique-se de que esse ID existe
     list_items()

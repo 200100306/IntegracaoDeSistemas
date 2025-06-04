@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect
 import rest_client, soap_client, graphql_client, grpc_client
+from google.protobuf.empty_pb2 import Empty
 
 app = Flask(__name__)
 
@@ -38,20 +39,44 @@ def create_item(servico):
 
     try:
         if servico == 'rest':
-            rest_client.create_item(name, description)
+           rest_client.create_item(name, description)
         elif servico == 'soap':
-            soap_client.create_item(name, description)
+           soap_client.create_item(name, description)
         elif servico == 'graphql':
-            graphql_client.create_item(name, description)
+           graphql_client.create_item(name, description)
         elif servico == 'grpc':
-            grpc_client.create_item(name, description)
+           grpc_client.create_item(name, description)
         else:
-            return f"Serviço '{servico}' inválido.", 400
+          return f"Serviço '{servico}' inválido.", 400
     except Exception as e:
         return f"Erro ao criar tarefa via {servico}: {str(e)}", 500
 
     return redirect(f'/{servico}/list_items')
 
+# Rota para apagar um item
+@app.route('/<servico>/apagar', methods=['POST'])
+def delete_item(servico):
+    item_id = request.form.get('id')
+
+    if not item_id:
+        return "ID da tarefa é obrigatório!", 400
+
+    try:
+        if servico == 'rest':
+            rest_client.delete_item(item_id)
+        elif servico == 'soap':
+            soap_client.delete_item(item_id)
+        elif servico == 'graphql':
+            graphql_client.delete_item(item_id)
+        elif servico == 'grpc':
+            grpc_client.delete_item(item_id)
+        else:
+            return f"Serviço '{servico}' inválido.", 400
+    except Exception as e:
+        return f"Erro ao apagar tarefa via {servico}: {str(e)}", 500
+
+    return redirect(f'/{servico}/list_items')
+
 # Inicialização da aplicação
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=True, host='127.0.0.1', port=5000)

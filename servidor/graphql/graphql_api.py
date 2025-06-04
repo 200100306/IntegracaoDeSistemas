@@ -1,15 +1,18 @@
 import json
+import os
 import strawberry
 from strawberry.fastapi import GraphQLRouter
 from fastapi import FastAPI
 
-DATABASE = "database.json"
+# Caminho seguro para o arquivo JSON
+BASE_DIR = os.path.dirname(__file__)
+DATABASE = os.path.join(BASE_DIR, "database.json")
 
 def load_data():
     try:
         with open(DATABASE, "r") as file:
             return json.load(file)
-    except FileNotFoundError:
+    except (FileNotFoundError, json.JSONDecodeError):
         return {}
 
 def save_data(data):
@@ -24,14 +27,14 @@ class Item:
 
 @strawberry.type
 class Query:
-    @strawberry.field
+    @strawberry.field(name="getItems")
     def get_items(self) -> list[Item]:
         data = load_data()
         return [Item(id=k, **v) for k, v in data.items()]
 
 @strawberry.type
 class Mutation:
-    @strawberry.mutation
+    @strawberry.mutation(name="createItem")
     def create_item(self, name: str, description: str) -> Item:
         data = load_data()
         item_id = str(len(data) + 1)
@@ -40,7 +43,7 @@ class Mutation:
         save_data(data)
         return Item(id=item_id, **new_item)
 
-    @strawberry.mutation
+    @strawberry.mutation(name="deleteItem")
     def delete_item(self, id: str) -> str:
         data = load_data()
         if id in data:
@@ -50,9 +53,10 @@ class Mutation:
         return "Item não encontrado"
 
 schema = strawberry.Schema(query=Query, mutation=Mutation)
+
 app = FastAPI()
 app.include_router(GraphQLRouter(schema), prefix="/graphql")
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8004)
+    uvicorn.run("graphql_api:app", host="0.0.0.0", port=8004, reload=True)

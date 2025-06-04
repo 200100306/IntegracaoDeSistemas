@@ -1,12 +1,19 @@
 {
-    "1": {
-        "nome": "Exemplo",
-        "descricao": "Item de teste"
-    },
-    "2": {
-        "nome": "Exemplo",
-        "descricao": "Item de teste"
-    }
+    "items": [
+        {
+            "id": "1",
+            "name": "sddsaadsasa",
+            "description": "dsadsa"
+        },
+        {
+            "id": "2",
+            "name": "gfgfdgfd",
+            "description": "gfdgfd"
+        },
+        {
+            "id": "3",
+            "name": "hhhhh",
+            "description": "hhjjkj"
+        }
+    ]
 }
-
-

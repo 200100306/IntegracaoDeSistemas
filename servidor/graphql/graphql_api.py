@@ -8,6 +8,7 @@ from fastapi import FastAPI
 BASE_DIR = os.path.dirname(__file__)
 DATABASE = os.path.join(BASE_DIR, "database.json")
 
+# Carrega os dados do arquivo JSON
 def load_data():
     try:
         with open(DATABASE, "r") as file:
@@ -15,16 +16,19 @@ def load_data():
     except (FileNotFoundError, json.JSONDecodeError):
         return {}
 
+# Salva os dados no arquivo JSON
 def save_data(data):
     with open(DATABASE, "w") as file:
         json.dump(data, file, indent=4)
 
+# Define o tipo Item para GraphQL
 @strawberry.type
 class Item:
     id: str
     name: str
     description: str
 
+# Query do GraphQL para buscar itens
 @strawberry.type
 class Query:
     @strawberry.field(name="getItems")
@@ -32,6 +36,7 @@ class Query:
         data = load_data()
         return [Item(id=k, **v) for k, v in data.items()]
 
+# Mutations do GraphQL: criar e deletar itens
 @strawberry.type
 class Mutation:
     @strawberry.mutation(name="createItem")
@@ -52,11 +57,13 @@ class Mutation:
             return "Item deletado com sucesso"
         return "Item não encontrado"
 
+# Criação do schema e inclusão no FastAPI
 schema = strawberry.Schema(query=Query, mutation=Mutation)
 
 app = FastAPI()
 app.include_router(GraphQLRouter(schema), prefix="/graphql")
 
+# Executa o servidor com Uvicorn
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("graphql_api:app", host="0.0.0.0", port=8004, reload=True)

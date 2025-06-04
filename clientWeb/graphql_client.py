@@ -4,11 +4,15 @@ GRAPHQL_URL = "http://127.0.0.1:8004/graphql"
 
 def graphql_query(query, variables=None):
     try:
-        response = requests.post(GRAPHQL_URL, json={'query': query, 'variables': variables})
+        response = requests.post(
+            GRAPHQL_URL,
+            json={'query': query, 'variables': variables},
+            headers={'Content-Type': 'application/json'}
+        )
         response.raise_for_status()
         return response.json()
     except requests.exceptions.RequestException as e:
-        print("Erro na requisição GraphQL:", e)
+        print("❌ Erro na requisição GraphQL:", e)
         return None
 
 def list_items():
@@ -23,16 +27,17 @@ def list_items():
     """
     result = graphql_query(query)
     print("DEBUG LIST RESULT:", result)
+
     if result and "data" in result:
         items = result["data"].get("getItems", [])
         if items:
-            print("\nItens disponíveis:")
+            print("\n📦 Itens disponíveis:")
             for item in items:
-                print(f"- ID: {item['id']}, Nome: {item['name']}, Descrição: {item['description']}")
+                print(f" - ID: {item['id']}, Nome: {item['name']}, Descrição: {item['description']}")
         else:
-            print("\nNenhum item encontrado.")
+            print("\n📭 Nenhum item encontrado.")
     else:
-        print("\nErro ao recuperar itens.")
+        print("\n⚠️ Erro ao recuperar itens.")
         if result and "errors" in result:
             print("Detalhes:", result["errors"])
 
@@ -48,11 +53,12 @@ def create_item(name, description):
     """
     variables = {"name": name, "description": description}
     result = graphql_query(mutation, variables)
+
     if result and "data" in result:
         item = result["data"]["createItem"]
-        print(f"\nItem criado: ID {item['id']}, Nome: {item['name']}")
+        print(f"\n✅ Item criado: ID {item['id']}, Nome: {item['name']}")
     else:
-        print("\nErro ao criar item.")
+        print("\n❌ Erro ao criar item.")
         if result and "errors" in result:
             print("Detalhes:", result["errors"])
 
@@ -64,17 +70,19 @@ def delete_item(item_id):
     """
     variables = {"id": item_id}
     result = graphql_query(mutation, variables)
+
     if result and "data" in result:
-        print(f"\n{result['data']['deleteItem']}")
+        print(f"\n🗑️ {result['data']['deleteItem']}")
     else:
-        print("\nErro ao apagar item.")
+        print("\n❌ Erro ao apagar item.")
         if result and "errors" in result:
             print("Detalhes:", result["errors"])
 
+# Testes de demonstração
 if __name__ == "__main__":
-    print("CLIENTE GRAPHQL")
+    print("🧪 CLIENTE GRAPHQL - Testando operações...")
 
     create_item("Lápis", "Um lápis preto")
     list_items()
-    delete_item("1")  # Certifique-se de que esse ID existe
+    delete_item("1")
     list_items()

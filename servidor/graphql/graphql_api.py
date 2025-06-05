@@ -1,14 +1,21 @@
 import json
 import os
+import sys
 import strawberry
 from strawberry.fastapi import GraphQLRouter
 from fastapi import FastAPI
 
-# Caminho seguro para o arquivo JSON
+# Adiciona o caminho ao diretório 'client' ao sys.path
+CLIENT_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../clientWeb'))
+sys.path.append(CLIENT_PATH)
+
+from rabbit_client import publicar_evento 
+
+# Caminho para o arquivo JSON
 BASE_DIR = os.path.dirname(__file__)
 DATABASE = os.path.join(BASE_DIR, "database.json")
 
-# Carrega os dados do arquivo JSON
+# Funções de leitura e escrita
 def load_data():
     try:
         with open(DATABASE, "r") as file:
@@ -16,19 +23,18 @@ def load_data():
     except (FileNotFoundError, json.JSONDecodeError):
         return {}
 
-# Salva os dados no arquivo JSON
 def save_data(data):
     with open(DATABASE, "w") as file:
         json.dump(data, file, indent=4)
 
-# Define o tipo Item para GraphQL
+# Tipo GraphQL
 @strawberry.type
 class Item:
     id: str
     name: str
     description: str
 
-# Query do GraphQL para buscar itens
+# Queries
 @strawberry.type
 class Query:
     @strawberry.field(name="getItems")
@@ -36,7 +42,7 @@ class Query:
         data = load_data()
         return [Item(id=k, **v) for k, v in data.items()]
 
-# Mutations do GraphQL: criar e deletar itens
+# Mutations
 @strawberry.type
 class Mutation:
     @strawberry.mutation(name="createItem")
@@ -46,6 +52,11 @@ class Mutation:
         new_item = {"name": name, "description": description}
         data[item_id] = new_item
         save_data(data)
+
+        # Publica no RabbitMQ
+        print("📤 Enviando para RabbitMQ...")
+        publicar_evento(name, description)
+
         return Item(id=item_id, **new_item)
 
     @strawberry.mutation(name="deleteItem")
@@ -57,13 +68,12 @@ class Mutation:
             return "Item deletado com sucesso"
         return "Item não encontrado"
 
-# Criação do schema e inclusão no FastAPI
+# Schema + FastAPI
 schema = strawberry.Schema(query=Query, mutation=Mutation)
-
 app = FastAPI()
 app.include_router(GraphQLRouter(schema), prefix="/graphql")
 
-# Executa o servidor com Uvicorn
+# Execução
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("graphql_api:app", host="0.0.0.0", port=8004, reload=True)

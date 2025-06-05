@@ -1,7 +1,7 @@
 import pika
 
 class RabbitMQ:
-    def __init__(self, host='localhost'):
+    def __init__(self, host='192.168.246.55:5672'):
         self.connection = pika.BlockingConnection(pika.ConnectionParameters(host))
         self.channel = self.connection.channel()
         self.channel.queue_declare(queue='minha_fila')

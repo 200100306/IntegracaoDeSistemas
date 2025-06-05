@@ -111,6 +111,6 @@ wsgi_app = WsgiApplication(app)
 
 # Inicialização do servidor
 if __name__ == '__main__':
-    print("SOAP server running at: http://192.168.246.55:8002/?wsdl")
+    print("SOAP server running at: http://127.0.0.1:8002/?wsdl")
     server = make_server('0.0.0.0', 8002, wsgi_app)
     server.serve_forever()

@@ -54,7 +54,7 @@ def serve():
     items_pb2_grpc.add_ItemServiceServicer_to_server(ItemService(), server)
     server.add_insecure_port("[::]:8003")  # Porta corrigida para 8003
     server.start()
-    print("Servidor gRPC iniciado em 192.168.246.55:8003")
+    print("Servidor gRPC iniciado em 127.0.0.1:8003")
     server.wait_for_termination()
 
 if __name__ == "__main__":

@@ -5,11 +5,10 @@ import subprocess
 
 def iniciar_rest():
     os.system("python3 rest/rest_api.py")
-
+    #os.system("uvicorn rest.rest_api:app --host 0.0.0.0 --port 8001 --reload")
 
 def iniciar_soap():
     os.system("python3 soap/soap_api.py")
-
 
 def iniciar_graphql():
     os.system("python3 graphql/graphql_api.py")
@@ -37,3 +36,4 @@ if __name__ == "__main__":
 
     for processo in processos:
         processo.join()
+        
